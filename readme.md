@@ -6,5 +6,5 @@ Pawn levels (easiest) all the way to the king and queen (hardest)
 
 ## Iterations.
 
-1. Add in an image and have it move side to side!
+1. Add in an image of a key and have it move side to side! up/down move it in those directions. (pong test)
 2. ...

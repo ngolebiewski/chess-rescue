@@ -16,46 +16,49 @@ var _ embed.FS // keeps embed imported even if not directly used
 //go:embed assets/images/key.png
 var keyPNG []byte
 
-
-
 const (
-    screenWidth     = 256
-    screenHeight    = 256
-    scale           = 3   
-    frameWidth      = 16
-    frameHeight     = 16
+	screenWidth  = 256
+	screenHeight = 256
+	scale        = 3
+	frameWidth   = 16
+	frameHeight  = 16
 )
 
-var keyImage *ebiten.Image
-var count int = 0
-var direction bool
-var playerY float64 = 50.0
+var (
+	keyImage  *ebiten.Image
+	// count     int = 0
+	// direction bool
+	// playerY   float64 = 50.0
+)
 
-type Game struct{
+type Game struct {
 	keys []ebiten.Key
+	count     int
+	direction bool
+	playerY   float64
 }
 
 func (g *Game) Update() error {
-	if count % screenWidth * scale == 0 {
-		direction = !direction
+	if g.count%screenWidth*scale == 0 {
+		g.direction = !g.direction
 	}
-	if direction{
-		count++}
-	if !direction{
-		count--}
+	if g.direction {
+		g.count++
+	}
+	if !g.direction {
+		g.count--
+	}
 	// if count > screenWidth * scale {
 	// }
-	
+
 	g.keys = inpututil.AppendPressedKeys(g.keys[:0])
 
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
-		playerY--
-		log.Println("Arrow Up pressed - do something")
+		g.playerY--
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
-		playerY++
-		log.Println("Arrow Down pressed - do something else")
+		g.playerY++
 	}
 
 	return nil
@@ -63,11 +66,11 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Chess Rescue!")
-	
+
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(-float64(frameWidth)/2, -float64(frameHeight)/2)
 	// op.GeoM.Translate(screenWidth/2, screenHeight/2)
-	op.GeoM.Translate(float64(count), playerY)
+	op.GeoM.Translate(float64(g.count), g.playerY)
 	screen.DrawImage(keyImage, op)
 }
 
@@ -80,15 +83,20 @@ func main() {
 
 	img, _, err := image.Decode(bytes.NewReader(keyPNG))
 	if err != nil {
-			log.Fatal(err)
+		log.Fatal(err)
 	}
 	keyImage = ebiten.NewImageFromImage(img)
 
-
 	ebiten.SetWindowSize(screenWidth*scale, screenHeight*scale)
 	ebiten.SetWindowTitle("Chess Rescue")
-	if err := ebiten.RunGame(&Game{}); err != nil {
+
+	game := &Game{
+		count:     0,
+		direction: false,
+		playerY:   50.0,
+	}
+
+	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)
 	}
 }
-
