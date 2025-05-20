@@ -20,9 +20,9 @@ var _ embed.FS // keeps embed imported to fool the Go Linter in VS Code
 var keyPNG []byte
 
 const (
-	screenWidth  = 256
-	screenHeight = 256
-	scale        = 3
+	screenWidth  = 480
+	screenHeight = 320
+	scale        = 2
 	frameWidth   = 16
 	frameHeight  = 16
 	spacer       = 10
